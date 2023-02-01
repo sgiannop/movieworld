@@ -6,6 +6,7 @@ use App\Repository\MovieRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
+#[ORM\Table(name: '`Movies`')]
 class Movie
 {
     #[ORM\Id]

@@ -6,6 +6,7 @@ use App\Repository\VoteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VoteRepository::class)]
+#[ORM\Table(name: '`Votes`')]
 class Vote
 {
     #[ORM\Id]
