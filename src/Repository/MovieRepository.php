@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Movie>
@@ -16,9 +17,24 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MovieRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_PER_PAGE = 2;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Movie::class);
+    }
+
+    public function getMoviePaginator(int $offset): Paginator
+    {
+         $query = $this->createQueryBuilder('c')
+            //  ->andWhere('c.movie = :movie')
+            //  ->setParameter('movie', $movie)
+             ->orderBy('c.createdAt', 'DESC')
+             ->setMaxResults(self::PAGINATOR_PER_PAGE)
+             ->setFirstResult($offset)
+             ->getQuery();
+
+         return new Paginator($query);
     }
 
     public function save(Movie $entity, bool $flush = false): void
