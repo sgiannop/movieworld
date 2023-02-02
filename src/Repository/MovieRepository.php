@@ -37,6 +37,11 @@ class MovieRepository extends ServiceEntityRepository
          return new Paginator($query);
     }
 
+    public function findAll(): array
+    {
+        return $this->findBy([], [ 'createdAt' => 'ASC' ]);
+    }
+
     public function save(Movie $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
