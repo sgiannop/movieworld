@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MovieWorld - {{ movie }}{% endblock %}
+
+{% block body %}
+    <h2>{{ movie }} Movie</h2>
+
+    {% if votes|length > 0 %}
+        {% for vote in votes %}
+            <h4>{{ vote.id }}</h4>
+        {% endfor %}
+    {% else %}
+        <div>No votes have been posted yet for this movie.</div>
+    {% endif %}
+{% endblock %}
