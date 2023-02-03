@@ -14,10 +14,6 @@ class Vote
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'votes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?AppUser $appUser = null;
-
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -28,18 +24,6 @@ class Vote
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getAppUser(): ?AppUser
-    {
-        return $this->appUser;
-    }
-
-    public function setAppUser(?AppUser $appUser): self
-    {
-        $this->appUser = $appUser;
-
-        return $this;
     }
 
     public function __toString(): string
