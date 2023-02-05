@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MoviesController extends AbstractController
 {
-    #[Route('/movies', name: 'movies')]
+    #[Route('/', name: 'movies')]
     public function index(Request $request, MovieRepository $movieRepository): Response
     {
         $offset = max(0, $request->query->getInt('offset', 0));
