@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MovieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
@@ -29,6 +30,22 @@ class Movie
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Vote::class, orphanRemoval: true)]
     private Collection $votes;
+
+    #[ORM\ManyToOne(inversedBy: 'movies')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photoPath = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $likes = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $hates = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $datePublished = null;
 
     public function __construct()
     {
@@ -107,6 +124,66 @@ class Movie
                 $vote->setMovie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getPhotoPath(): ?string
+    {
+        return $this->photoPath;
+    }
+
+    public function setPhotoPath(?string $photoPath): self
+    {
+        $this->photoPath = $photoPath;
+
+        return $this;
+    }
+
+    public function getLikes(): ?int
+    {
+        return $this->likes;
+    }
+
+    public function setLikes(?int $likes): self
+    {
+        $this->likes = $likes;
+
+        return $this;
+    }
+
+    public function getHates(): ?int
+    {
+        return $this->hates;
+    }
+
+    public function setHates(?int $hates): self
+    {
+        $this->hates = $hates;
+
+        return $this;
+    }
+
+    public function getDatePublished(): ?\DateTimeInterface
+    {
+        return $this->datePublished;
+    }
+
+    public function setDatePublished(\DateTimeInterface $datePublished): self
+    {
+        $this->datePublished = $datePublished;
 
         return $this;
     }

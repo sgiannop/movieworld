@@ -8,7 +8,11 @@
      <div>There are {{ movies|length }} movies.</div>
     {% for movie in movies %}
         <h4><a href="{{ path('movie', { id : movie.id }) }}">{{ movie.title }}</a></h4>
+        <img src="{{ asset('images/' ~ movie.photopath) }}" />
         <p>{{ movie.description }}</p>
+        <h2>Publication Date: {{ movie.datePublished | date('d-m-Y')}}</h2>
+        <p>{{ movie.likes}}</p>
+        <p>{{ movie.hates}}</p>
     {% endfor %}
     {% if previous >= 0 %}
         <a href="{{ path('movies', { offset: previous }) }}">Previous</a>

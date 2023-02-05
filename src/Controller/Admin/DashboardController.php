@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Movie;
 use App\Entity\Vote;
+use App\Entity\User;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -48,5 +49,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linktoRoute('Back to the website', 'fas fa-home', 'homepage');
         yield MenuItem::linkToCrud('Movies', 'fas fa-map-marker-alt', Movie::class);
         yield MenuItem::linkToCrud('Votes', 'fas fa-comments', Vote::class);
+        yield MenuItem::linkToCrud('Users', 'fas fa-user', User::class);
     }
 }

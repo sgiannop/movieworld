@@ -12,6 +12,14 @@ class MovieCrudController extends AbstractCrudController
         return Movie::class;
     }
 
+    public function createEntity(string $entityFqcn)
+    {
+        $movie = new Movie();
+        $movie->setOwner($this->getUser());
+
+        return $movie;
+    }
+
     /*
     public function configureFields(string $pageName): iterable
     {
