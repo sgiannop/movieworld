@@ -1,23 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Movies World Catalog!{% endblock %}
+{% block title %}movie Guestbook{% endblock %}
 
 {% block body %}
+    <h2 class="mb-5">
+        Give your feedback!
+    </h2>
 
-    <h2>Movies Catalog!</h2>
-     <div>There are {{ movies|length }} movies.</div>
-    {% for movie in movies %}
-        <h4><a href="{{ path('movie', { id : movie.id }) }}">{{ movie.title }}</a></h4>
-        <img src="{{ asset('images/' ~ movie.photopath) }}" />
-        <p>{{ movie.description }}</p>
-        <h2>Publication Date: {{ movie.datePublished | date('d-m-Y')}}</h2>
-        <p>{{ movie.likes}}</p>
-        <p>{{ movie.hates}}</p>
+    {% for row in movies|batch(4) %}
+        <div class="row">
+            {% for movie in row %}
+                <div class="col-12 col-md-6 col-lg-3 mb-4">
+                    <div class="card border shadow lift">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h4 class="font-weight-light">
+                                    {{ movie }}
+                                </h4>
+                            </div>
+
+                            <a href="{{ path('movie', { id: movie.id, slug: movie.slug }) }}"
+                               class="btn btn-sm btn-primary stretched-link">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% endfor %}
-    {% if previous >= 0 %}
-        <a href="{{ path('movies', { offset: previous }) }}">Previous</a>
-    {% endif %}
-    {% if next < movies|length %}
-        <a href="{{ path('movies', { offset: next }) }}">Next</a>
-    {% endif %}
 {% endblock %}
