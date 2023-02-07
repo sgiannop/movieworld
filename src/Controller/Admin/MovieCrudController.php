@@ -40,12 +40,12 @@ class MovieCrudController extends AbstractCrudController
 
     public function configureFilters(Filters $filters): Filters
     {
-        return $filters->add(EntityFilter::new('conference'));
+        return $filters->add(EntityFilter::new('movie'));
     }
     
     public function configureFields(string $pageName): iterable
     {
-        yield AssociationField::new('movie');
+        yield AssociationField::new('votes');
         yield TextField::new('title');
         yield TextareaField::new('description')->hideOnIndex();
         yield ImageField::new('photoPath')->setBasePath('/uploads/photos')->setLabel('Photo')->onlyOnIndex();

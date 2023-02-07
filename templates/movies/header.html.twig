@@ -1,5 +1,5 @@
 {% for movie in movies %}
     <a class="nav-movie" href="{{ path('movie', { id: movie.id, slug: movie.slug }) }}">
-        {{ movie }}
+        {{ movie.title }}
     </a>
 {% endfor %}

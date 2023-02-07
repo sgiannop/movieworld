@@ -1,12 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}movie Guestbook - {{ movie }}{% endblock %}
+{% block title %}MovieWorld - {{ movie }}{% endblock %}
 
 {% block body %}
-    <h2 class="mb-5">
-        {{ movie }} movie
-    </h2>
-
     <div class="row">
         <div class="col-12 col-lg-8">
             {% if votes|length > 0 %}
@@ -50,7 +46,7 @@
                 </div>
             {% endif %}
         </div>
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-10">
             <div class="bg-light shadow border rounded-3 p-4">
                 <h3 class="font-weight-light">
                     Add your own feedback

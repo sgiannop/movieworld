@@ -10,19 +10,21 @@
     {% for row in movies|batch(4) %}
         <div class="row">
             {% for movie in row %}
-                <div class="col-12 col-md-6 col-lg-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-10 mb-4">
                     <div class="card border shadow lift">
                         <div class="card-body">
                             <div class="card-title">
                                 <h4 class="font-weight-light">
-                                    {{ movie }}
+                                    {{ movie.title }}
                                 </h4>
                             </div>
-
+                            <img src={{ movie.photoPath }} />
+                            {% if movie.owner == user %}
                             <a href="{{ path('movie', { id: movie.id, slug: movie.slug }) }}"
                                class="btn btn-sm btn-primary stretched-link">
                                 View
                             </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

@@ -17,27 +17,33 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Twig\Environment;
 class MoviesController extends AbstractController
 {
-    
+
     #[Route('/movie_header', name: 'movie_header')]
     public function movieHeader(MovieRepository $movieRepository, Environment $twig): Response
     {
-        return new Response($twig->render('movies/header.html.twig', [
+        $response = new Response($twig->render('movies/header.html.twig', [
             'movies' => $movieRepository->findAll(),
+            'user' => $this->getUser()
         ]));
+        //$response->setSharedMaxAge(3600);
+        return $response;
     }
 
     #[Route('/', name: 'movies')]
-    public function index(Request $request, MovieRepository $movieRepository): Response
+    public function index(Request $request, MovieRepository $movieRepository, Environment $twig): Response
     {
         $offset = max(0, $request->query->getInt('offset', 0));
         $paginator = $movieRepository->getMoviePaginator($offset);
 
-        return $this->render('movies/index.html.twig', [      
+        $response = new Response($twig->render('movies/index.html.twig', [      
             // 'movies' => $movieRepository->findAll(),
             'movies' => $paginator,
             'previous' => $offset - MovieRepository::PAGINATOR_PER_PAGE,
             'next' => min(count($paginator), $offset + MovieRepository::PAGINATOR_PER_PAGE),
-        ]);
+            'user' => $this->getUser()
+        ]));
+        // $response->setSharedMaxAge(3600);
+        return $response;
     }
 
     #[Route('/movies/{id}', name: 'movie')]
@@ -74,7 +80,8 @@ class MoviesController extends AbstractController
         return $this->render('movies/show.html.twig', [
             'movie' => $movie,
             'votes' => $voteRepository->findBy(['movie' => $movie], ['createdAt' => 'DESC']),
-            'movie_form' => $form
+            'movie_form' => $form,
+            'user' => $this->getUser()
         ]);
     }
 }
