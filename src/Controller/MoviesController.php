@@ -111,5 +111,10 @@ class MoviesController extends AbstractController
 
     }
 
+    #[Route('/movies/sortLikes/{id}', name: 'sortLikes')]
+    public function sortLikes($id) {
+        return null;
+    }
+
 }
     
