@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Movie;
+use App\Entity\Vote;
 use App\Repository\MovieRepository;
 use App\Repository\VoteRepository;
 use App\Form\MovieFormType;
@@ -49,10 +50,9 @@ class MoviesController extends AbstractController
     #[Route('/movies/{id}', name: 'movie')]
     public function show(Request $request, 
                         MovieRepository $movieRepository, VoteRepository $voteRepository, 
-                        ManagerRegistry $doctrine, #[Autowire('%photo_dir%')] string $photoDir, Movie $movie = null): Response
+                        #[Autowire('%photo_dir%')] string $photoDir, Movie $movie = null): Response
     {
         $form = $this->createForm(MovieFormType::class, $movie);
-        $entityManager = $doctrine->getManager();
 
         $form->handleRequest($request);
 
@@ -84,5 +84,25 @@ class MoviesController extends AbstractController
             'user' => $this->getUser()
         ]);
     }
+
+    #[Route('/movies/addlike/{id}', name: 'addlike')]
+    public function addlike(Request $request, MovieRepository $movieRepository, VoteRepository $voteRepository) : Response
+    {
+        $vote = new Vote();
+        $vote->setIsLiked(true);
+        $movie = $movieRepository->findBy(['id' => basename($request->getUri())], ['createdAt' => 'DESC'])[0];
+        $likes = $movie->getLikes();
+        if($likes == null) $likes = 0;
+        $movie->setLikes(++$likes);
+        $vote->setMovie($movie);
+        $vote->setVoter($this->getUser());
+        $voteRepository->save($vote, true);
+        $movieRepository->save($movie, true);
+
+        $this->addFlash('notice', 'Your changes were saved!');
+        return $this->redirectToRoute('movies');
+
+    }
+
 }
     

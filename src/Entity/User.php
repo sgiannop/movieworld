@@ -38,9 +38,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    #[ORM\OneToMany(mappedBy: 'voter', targetEntity: Vote::class, orphanRemoval: true)]
+    private Collection $votes;
+
     public function __construct()
     {
         $this->movies = new ArrayCollection();
+        $this->votes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -156,6 +160,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vote>
+     */
+    public function getVotes(): Collection
+    {
+        return $this->votes;
+    }
+
+    public function addVote(Vote $vote): self
+    {
+        if (!$this->votes->contains($vote)) {
+            $this->votes->add($vote);
+            $vote->setVoter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVote(Vote $vote): self
+    {
+        if ($this->votes->removeElement($vote)) {
+            // set the owning side to null (unless already changed)
+            if ($vote->getVoter() === $this) {
+                $vote->setVoter(null);
+            }
+        }
 
         return $this;
     }

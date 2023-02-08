@@ -45,17 +45,17 @@ class Movie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photoPath = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $likes = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $hates = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datePublished = null;
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $likes = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $hates = null;
 
     public function __construct()
     {
@@ -96,9 +96,27 @@ class Movie
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    #[ORM\PrePersist]
+    public function setCreatedAtValue()
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    public function setLikesValue()
+    {
+        $this->likes = 0;
+    }
+    
+    #[ORM\PrePersist]
+    public function setHatesValue()
+    {
+        $this->hates = 0;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt ;
 
         return $this;
     }
@@ -162,30 +180,6 @@ class Movie
         return $this;
     }
 
-    public function getLikes(): ?int
-    {
-        return $this->likes;
-    }
-
-    public function setLikes(?int $likes): self
-    {
-        $this->likes = $likes;
-
-        return $this;
-    }
-
-    public function getHates(): ?int
-    {
-        return $this->hates;
-    }
-
-    public function setHates(?int $hates): self
-    {
-        $this->hates = $hates;
-
-        return $this;
-    }
-
     public function getDatePublished(): ?\DateTimeInterface
     {
         return $this->datePublished;
@@ -215,5 +209,29 @@ class Movie
         if (!$this->slug || '-' === $this->slug) {
             $this->slug = (string) $slugger->slug((string) $this)->lower();
         }
+    }
+
+    public function getLikes(): ?int
+    {
+        return $this->likes;
+    }
+
+    public function setLikes(?int $likes): self
+    {
+        $this->likes = $likes;
+
+        return $this;
+    }
+
+    public function getHates(): ?int
+    {
+        return $this->hates;
+    }
+
+    public function setHates(?int $hates): self
+    {
+        $this->hates = $hates;
+
+        return $this;
     }
 }

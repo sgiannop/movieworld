@@ -30,35 +30,35 @@ class MovieCrudController extends AbstractCrudController
         return $movie;
     }
 
-    public function configureCrud(Crud $crud): Crud
-    {
-        return $crud->setEntityLabelInSingular('Movie Vote')
-            ->setEntityLabelInPlural('Movie Votes')
-            ->setSearchFields(['title', 'description'])
-            ->setDefaultSort(['createdAt' => 'DESC']);
-    }
+    // public function configureCrud(Crud $crud): Crud
+    // {
+    //     return $crud->setEntityLabelInSingular('Movie Vote')
+    //         ->setEntityLabelInPlural('Movie Votes')
+    //         ->setSearchFields(['title', 'description'])
+    //         ->setDefaultSort(['createdAt' => 'DESC']);
+    // }
 
-    public function configureFilters(Filters $filters): Filters
-    {
-        return $filters->add(EntityFilter::new('movie'));
-    }
+    // public function configureFilters(Filters $filters): Filters
+    // {
+    //     return $filters->add(EntityFilter::new('movie'));
+    // }
     
-    public function configureFields(string $pageName): iterable
-    {
-        yield AssociationField::new('votes');
-        yield TextField::new('title');
-        yield TextareaField::new('description')->hideOnIndex();
-        yield ImageField::new('photoPath')->setBasePath('/uploads/photos')->setLabel('Photo')->onlyOnIndex();
+    // public function configureFields(string $pageName): iterable
+    // {
+    //     yield AssociationField::new('votes');
+    //     yield TextField::new('title');
+    //     yield TextareaField::new('description')->hideOnIndex();
+    //     yield ImageField::new('photoPath')->setBasePath('/uploads/photos')->setLabel('Photo')->onlyOnIndex();
 
-        $createdAt = DateTimeField::new('createdAt')->setFormTypeOptions([
-            'html5' => true,
-            'years' => range(date('Y'), date('Y') + 5),
-            'widget' => 'single_text',
-        ]);
-        if (Crud::PAGE_EDIT === $pageName) {
-            yield $createdAt->setFormTypeOption('disabled', true);
-        } else {
-            yield $createdAt;
-        }
-    }    
+    //     $createdAt = DateTimeField::new('createdAt')->setFormTypeOptions([
+    //         'html5' => true,
+    //         'years' => range(date('Y'), date('Y') + 5),
+    //         'widget' => 'single_text',
+    //     ]);
+    //     if (Crud::PAGE_EDIT === $pageName) {
+    //         yield $createdAt->setFormTypeOption('disabled', true);
+    //     } else {
+    //         yield $createdAt;
+    //     }
+    // }    
 }

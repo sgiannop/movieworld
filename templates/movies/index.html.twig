@@ -18,18 +18,28 @@
                                     {{ movie.title }}
                                 </h4>
                             </div>
-                            <img src={{ movie.photoPath }} />
+                            <img src="uploads/images/{{ movie.photoPath }}" />
                             {% if movie.owner == user %}
-                            <a href="{{ path('movie', { id: movie.id, slug: movie.slug }) }}"
-                               class="btn btn-sm btn-primary stretched-link">
-                                View
-                            </a>
+                            <a href="{{ path('movie', { id: movie.id, slug: movie.slug }) }}" class="btn btn-sm btn-primary stretched-link">Edit</a>
                             {% endif %}
+
+                            <p>{{ movie.description }}</p>
+                            <p>{{ movie.datePublished | format_datetime('medium', 'short') }}</p>  
                         </div>
                     </div>
+                    <div class="col-md-2" style="font-size: 1em; color: #606060;">
+                        <a href="{{ path('addlike', {'id': movie.id}) }}" id="popup">
+                            <span class="fa fa-caret-up"></span>
+                        </a>
+                        <span>{{ movie.likes }}</span>
+                        <span class="fa fa-caret-down"></span>
+                        <span>{{ movie.hates }}</span>
+                    </div> 
                 </div>
             {% endfor %}
         </div>
     {% endfor %}
-    {# <a href="{{ path('movie', { id: "new", slug: "new" }) }}" class="btn btn-sm btn-primary stretched-link">Add Movie</a> #}
+    {% if app.user is defined %}
+    {# <a href="{{ path('movie', { id: 0 }) }}" class="btn btn-sm btn-primary stretched-link">Add Movie</a> #}
+    {% endif %}
 {% endblock %}
