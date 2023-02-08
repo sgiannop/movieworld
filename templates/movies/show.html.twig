@@ -4,55 +4,10 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-12 col-lg-8">
-            {% if votes|length > 0 %}
-                {% for vote in votes %}
-                    <div class="media shadow border rounded-3 p-3 mb-4">
-                        <div class="vote-img me-3">
-                            {% if vote.photofilename %}
-                                <a href="{{ asset('uploads/photos/' ~ vote.photofilename) }}" target="_blank">
-                                    <img src="{{ asset('uploads/photos/' ~ vote.photofilename) }}" />
-                                </a>
-                            {% endif %}
-                        </div>
-
-                        <div class="media-body">
-                            <h4 class="font-weight-light mb-0">
-                                {{ vote.author }}
-                            </h4>
-
-                            <div class="mb-2">
-                                <small class="text-muted text-uppercase">
-                                    {{ vote.createdAt|format_datetime('medium', 'short') }}
-                                </small>
-                            </div>
-
-                            <div class="vote-text">
-                                {{ vote.text|nl2br }}
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                <div>There are {{ votes|length }} votes.</div>
-                {% if previous >= 0 %}
-                    <a href="{{ path('movie', { slug: movie.slug, offset: previous }) }}">Previous</a>
-                {% endif %}
-                {% if next < votes|length %}
-                    <a href="{{ path('movie', { slug: movie.slug, offset: next }) }}">Next</a>
-                {% endif %}
-            {% else %}
-                <div class="text-center">
-                    No votes have been posted yet for this movie.
-                </div>
-            {% endif %}
-        </div>
         <div class="col-12 col-lg-10">
-            <div class="bg-light shadow border rounded-3 p-4">
-                <h3 class="font-weight-light">
-                    Add your own feedback
-                </h3>
+                    <div class="bg-light shadow border rounded-3 p-4">
 
-                {{ form(movie_form) }}
+            {{ form(movie_form) }}
             </div>
         </div>
     </div>

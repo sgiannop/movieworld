@@ -23,7 +23,6 @@ class MoviesController extends AbstractController
     public function movieHeader(MovieRepository $movieRepository, Environment $twig): Response
     {
         $response = new Response($twig->render('movies/header.html.twig', [
-            'movies' => $movieRepository->findAll(),
             'user' => $this->getUser()
         ]));
         //$response->setSharedMaxAge(3600);
@@ -31,10 +30,17 @@ class MoviesController extends AbstractController
     }
 
     #[Route('/', name: 'movies')]
-    public function index(Request $request, MovieRepository $movieRepository, Environment $twig): Response
+    public function index(Request $request, MovieRepository $movieRepository, Environment $twig) : Response
     {
         $offset = max(0, $request->query->getInt('offset', 0));
-        $paginator = $movieRepository->getMoviePaginator($offset);
+        $username = $request->query->get('username');
+        $column = $request->query->get('column');
+        if($column == null) $column = 'createdAt';
+        $dir = $request->query->get('dir');
+        $filter = $request->query->get('filter');
+        
+        
+        $paginator = $movieRepository->getMoviePaginator($offset, $column, $dir, $this->getUser());
 
         $response = new Response($twig->render('movies/index.html.twig', [      
             // 'movies' => $movieRepository->findAll(),
@@ -46,6 +52,7 @@ class MoviesController extends AbstractController
         // $response->setSharedMaxAge(3600);
         return $response;
     }
+    
 
     #[Route('/movies/{id}', name: 'movie')]
     public function show(Request $request, 
