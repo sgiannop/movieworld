@@ -1,5 +1,5 @@
 # MovieWorld
-
+![alt text](screenshot.png)
 MovieWorld is a sample written with PHP Symfony web framework for demo purposes.
 
 ## Installation
