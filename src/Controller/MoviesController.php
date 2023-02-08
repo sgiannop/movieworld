@@ -47,9 +47,9 @@ class MoviesController extends AbstractController
     }
 
     #[Route('/movies/{id}', name: 'movie')]
-    public function show(Request $request, Movie $movie, 
+    public function show(Request $request, 
                         MovieRepository $movieRepository, VoteRepository $voteRepository, 
-                        ManagerRegistry $doctrine, #[Autowire('%photo_dir%')] string $photoDir): Response
+                        ManagerRegistry $doctrine, #[Autowire('%photo_dir%')] string $photoDir, Movie $movie = null): Response
     {
         $form = $this->createForm(MovieFormType::class, $movie);
         $entityManager = $doctrine->getManager();
@@ -59,9 +59,9 @@ class MoviesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) 
         {
          
-            $movie = $movieRepository->findBy(['id' => basename($request->getUri())], ['createdAt' => 'DESC']);
+            // $movie = $movieRepository->findBy(['id' => basename($request->getUri())], ['createdAt' => 'DESC']);
             $movie = $form->getData();
-
+            $movie->setOwner($this->getUser());
             if ($photo = $form['photo']->getData()) {
                 $filename = bin2hex(random_bytes(6)).'.'.$photo->guessExtension();
                 try {

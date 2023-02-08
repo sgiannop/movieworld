@@ -26,7 +26,20 @@
                     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#header-menu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Show/Hide navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    {% if user == null %}
+                    {% if app.user %}
+                    <div class="collapse navbar-collapse" id="header-menu">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item me-3">
+                                <a class="nav-link" href="{{ path('admin') }}">
+                                    {{ app.user.userIdentifier }}
+                                </a>
+                            </li>
+                            <li  class="nav-item me-3">
+                                <a class="nav-link"  href="{{ path('app_logout') }}">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% else %}
                     <div class="collapse navbar-collapse" id="header-menu">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item me-3">
@@ -37,16 +50,6 @@
                             <li class="nav-item me-3">
                                 <a class="nav-link" href="{{ path('app_register') }}">
                                     Register
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    {% else %}
-                    <div class="collapse navbar-collapse" id="header-menu">
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item me-3">
-                                <a class="nav-link" href="{{ path('admin') }}">
-                                    {{ user.email }}
                                 </a>
                             </li>
                         </ul>
