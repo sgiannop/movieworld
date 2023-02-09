@@ -3,18 +3,6 @@
 {% block title %}movie Guestbook{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-3 col-md-3 col-lg-3 mb-4">
-            <form class="pull-right hidden" role="search" id="nav-search-form" method="post" action="{{ path('movies', { filter: 'title' }) }}">
-                <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" name ="search">
-                <span class="input-group-btn">
-                    <button type="submit" class="btn btn-default"></button>
-                </span>
-                </div>
-            </form>
-        </div>
-    </div>
     {% for movie in movies %}
         <div class="row">
             <div class="col-10 col-md-6 col-lg-10 mb-4">
@@ -32,21 +20,26 @@
                             <div class="col-9 col-md-9 col-lg-9">
                                 <p>{{ movie.description }}</p>
                                 <p>{{ movie.datePublished | format_datetime('medium', 'short') }}</p>
+                                
+                                {% if movie.owner == user %}
+                                <a href="{{ path('movie', { id: movie.id, slug: movie.slug }) }}" class="btn btn-sm btn-primary">Edit</a>
+                                {% endif %}
+
+                                {% if app.user %}
+
                                 <div class="col-md-2" style="font-size: 1em; color: #606060;">
-                                    <a href="{{ path('addlike', {'id': movie.id}) }}" id="popup">
+                                    <a href="{{ path('movielike', {id: movie.id, liked: true}) }}" id="popup">
                                         <span class="fa fa-thumbs-up"></span>
                                     </a>
                                     <span>{{ movie.likes }}</span>
-                                    <span class="fa fa-thumbs-down"></span>
+                                    <a href="{{ path('movielike', {id: movie.id, liked: false}) }}" id="popup">
+                                        <span class="fa fa-thumbs-down"></span>
+                                    </a>
                                     <span>{{ movie.hates }}</span>
                                 </div>
+                                {% endif %}
                             </div>
-                            
                         </div>
-                        {% if movie.owner == user %}
-                        <a href="{{ path('movie', { id: movie.id, slug: movie.slug }) }}" class="btn btn-sm btn-primary stretched-link">Edit</a>
-                        {% endif %}
-                        
                     </div>
                 </div>
                  
@@ -67,13 +60,13 @@
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="hatesRadio" onclick="sortLikes());" checked>
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="hatesRadio" onclick="sortLikes();">
                                 <label class="form-check-label" for="flexRadioDefault2">
                                     Hates
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="datesRadio" checked>
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="datesRadio" onclick="sortLikes();">
                                 <label class="form-check-label" for="flexRadioDefault2">
                                     Dates
                                 </label>
@@ -95,27 +88,29 @@
 {% block javascripts %}
   <script>
     function sortLikes(){
-        debugger;
         var likesRadio = document.getElementById('likesRadio');
         var hatesRadio = document.getElementById('hatesRadio');
         var datesRadio = document.getElementById('datesRadio');
-        if (likesRadio.checked){
-            var jqxhr = $.ajax({
-                type: "POST",
-                url: "{{path('movies')}}",
-                data: null
-            })
-            .done(function(data) {
-                if (data.success === true) {
-                    window.location.href = data.url;
-                }
-            })
-        } else if (hatesRadio.checked) {
-            alert("You didn't check spare-price! Let me check it for you.")
-        } else if (datesRadio.checked) {
+        
+        var http = new XMLHttpRequest();
+        var url = '{{path('movies')}}';
 
+        http.open('POST', url, true);
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.onreadystatechange = function() {
+            if(http.readyState == 4 && http.status == 200) {
+                return false;
+            }
         }
+        
+        if (likesRadio.checked){
+            window.location.href= '{{path('movies')}}?column=likes&offset=0';
+        } else if (hatesRadio.checked) {
+            window.location.href= '{{path('movies')}}?column=hates&offset=0';
+        } else if (datesRadio.checked) {
+            window.location.href= '{{path('movies')}}?column=datePublished&offset=0';
+        }
+        return false;
     }
     </script>
 {% endblock %}
-

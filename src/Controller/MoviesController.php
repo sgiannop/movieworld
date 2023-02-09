@@ -33,17 +33,24 @@ class MoviesController extends AbstractController
     public function index(Request $request, MovieRepository $movieRepository, Environment $twig) : Response
     {
         $offset = max(0, $request->query->getInt('offset', 0));
-        $username = $request->query->get('username');
-        $column = $request->query->get('column');
-        if($column == null) $column = 'createdAt';
-        $dir = $request->query->get('dir');
+        if($this->getUser() != null) {
+            $username = $request->query->get('username');
+            if($username == $this->getUser()->getUserIdentifier()) {
+                $user = $this->getUser();
+            } else {
+                $user = null;
+            }
+        } else {
+            $user = null;
+        }
+        //$column = isset($_POST['column']) ? $_POST['column'] : 'createdAt';
+        $column = $request->query->get('column') ? $request->query->get('column') : 'createdAt';
+        $dir = $request->query->get('dir') ? $request->query->get('dir') : 'ASC';
         $filter = $request->query->get('filter');
         
-        
-        $paginator = $movieRepository->getMoviePaginator($offset, $column, $dir, $this->getUser());
+        $paginator = $movieRepository->getMoviePaginator($offset, $column, $dir, $user);
 
         $response = new Response($twig->render('movies/index.html.twig', [      
-            // 'movies' => $movieRepository->findAll(),
             'movies' => $paginator,
             'previous' => $offset - MovieRepository::PAGINATOR_PER_PAGE,
             'next' => min(count($paginator), $offset + MovieRepository::PAGINATOR_PER_PAGE),
@@ -92,15 +99,28 @@ class MoviesController extends AbstractController
         ]);
     }
 
-    #[Route('/movies/addlike/{id}', name: 'addlike')]
+    #[Route('/movielike', name: 'movielike')]
     public function addlike(Request $request, MovieRepository $movieRepository, VoteRepository $voteRepository) : Response
     {
+
+        $liked = $request->query->get('liked');
+        $id = $request->query->get('id');
+
+        $movie = $movieRepository->findBy(['id' => $id], ['createdAt' => 'DESC'])[0];
+
         $vote = new Vote();
-        $vote->setIsLiked(true);
-        $movie = $movieRepository->findBy(['id' => basename($request->getUri())], ['createdAt' => 'DESC'])[0];
-        $likes = $movie->getLikes();
-        if($likes == null) $likes = 0;
-        $movie->setLikes(++$likes);
+        if($liked == true) {
+            $vote->setIsLiked(true);
+            $likes = $movie->getLikes();
+            if($likes == null) $likes = 0;
+            $movie->setLikes(++$likes);
+        } else {
+            $vote->setIsLiked(false);
+            $hates = $movie->getHates();
+            if($hates == null) $hates = 0;
+            $movie->setHates(++$hates);
+        }
+        
         $vote->setMovie($movie);
         $vote->setVoter($this->getUser());
         $voteRepository->save($vote, true);
