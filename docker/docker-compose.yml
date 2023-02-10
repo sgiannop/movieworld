@@ -27,13 +27,13 @@ services:
       - APP_SECRET=${APP_SECRET}
       - DATABASE_URL=${DATABASE_URL}
     volumes:
-      - ../src/:/var/www
+      - ../src/:/var/www/movieworld
   nginx:
     container_name: nginx
     build:
       context: ./nginx
     volumes:
-      - ../src/:/var/www
+      - ../src/:/var/www/movieworld
       - ./nginx/nginx.conf/:/etc/nginx/nginx.conf
       - ./nginx/sites/:/etc/nginx/sites-available
       - ./nginx/conf.d/:/etc/nginx/conf.d
